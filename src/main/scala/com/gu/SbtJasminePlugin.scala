@@ -1,4 +1,4 @@
-package com.gu
+package com.joescii
 
 import sbt._
 import Keys._

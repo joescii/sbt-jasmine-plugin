@@ -13,7 +13,7 @@
 importPackage(java.lang);
 importPackage(java.io);
 importPackage(org.mozilla.javascript);
-importPackage(com.gu);
+importPackage(com.joescii);
 
 // Create the EnvJasmine namespace
 if (!this.EnvJasmine) {

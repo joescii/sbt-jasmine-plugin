@@ -2,9 +2,9 @@ sbtPlugin := true
 
 name := "sbt-jasmine-plugin"
 
-organization := "com.gu"
+organization := "com.joescii"
 
-version := "0.8-SNAPSHOT"
+version := "1.2-SNAPSHOT"
 
 libraryDependencies += "org.mozilla" % "rhino" % "1.7R4"
 
@@ -24,3 +24,4 @@ publishTo <<= (version) { version: String =>
         )
     )
 }
+
