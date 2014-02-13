@@ -136,4 +136,4 @@ The following will be greatly appreciated as part of your Pull Request:
 * Published binaries as a community sbt plugin
 
 ### 0 - 1.1
-* The project was created and maintained on [The Guardian's github page](https://github.com/guardian/sbt-jasmine-plugin).* 
+* The project was created and maintained on [The Guardian's github page](https://github.com/guardian/sbt-jasmine-plugin).
