@@ -6,8 +6,6 @@ An SBT plugin for running jasmine tests in your build.
 
 Add this plugin like any other to your `project/plugin.sbt` file:
 
-**(NOTE: Release pending)**
-
 ```scala
 addSbtPlugin("com.joescii" % "sbt-jasmine-plugin" % "1.2.0")  
 ```
