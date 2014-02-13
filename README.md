@@ -1,40 +1,41 @@
-**This plugin is no-longer being actively maintained by the Guardian.  Please see visit its [new home](https://github.com/barnesjd/sbt-jasmine-plugin)**
-
-
-----------------------------------------------------------------
-
-
-sbt-jasmine-plugin
-=================
+# sbt-jasmine-plugin
 
 An SBT plugin for running jasmine tests in your build.
 
-Getting the plugin
-------------------
+## Installation
 
-The most convenient way of using this plugin is to add a source dependency in a scala file under project/project:
+Add this plugin like any other to your `project/plugin.sbt` file:
 
+**(NOTE: Release pending)**
+
+```scala
+addSbtPlugin("com.joescii" % "sbt-jasmine-plugin" % "1.2.0")  // https://github.com/barnesjd/sbt-jasmine-plugin
 ```
-lazy val plugins = Project("plugins", file("."))
-    .dependsOn(uri("git://github.com/guardian/sbt-jasmine-plugin.git#1.1"))
-```
 
-you will also need to import the plugin's settings in the usual way:
+You will also need to import the plugin's settings in the usual way in your `build.sbt` file:
 
-```
+```scala
 seq(jasmineSettings : _*)
 ```
 
+If your build is defined in a `.scala` file, then you will also need to import the plugin's namespace:
 
-Running the plugin
-------------------
+```scala
+lazy val main = Project(appName, appVersion, appDependencies)
+  .settings(seq(jasmineSettings : _*))
+```
 
-Override the following settings setting in your build:
+
+## Configuration
+
+Override the following settings in your build:
 
  * appJsDir - the root directory where your application javascript lives
  * appJsLibDir - the root directory where you put javascript library files thast your application uses (e.g jquery)
- * jasmineTestDir - the directory that contains your jasmine tests, jasmine will look for /specs and /mocks sub directories
+ * jasmineTestDir - the directory that contains your jasmine tests, jasmine will look for /specs and /mocks sub directories (note that the plugin only picks up test files named `*.spec.js`!!!)
  * jasmineConfFile - the test.dependencies.js configuration file that loads the required application js and lib js files into the test context.
+ * jasmineRequireJsFile - the file that is your require.js library file
+ * jasmineRequireConfFile - the require.conf.js configuration file for require.js
 
 
 For a project laid out as follows:
@@ -63,7 +64,7 @@ src/
 
 The project configuration would be:
 
-```
+```scala
 appJsDir <+= sourceDirectory { src => src / "main" / "webapp" / "static" / "js" / "samples"}
 
 appJsLibDir <+= sourceDirectory { src => src / "main" / "webapp" / "static" / "js" / "samples" / "lib" }
@@ -73,13 +74,12 @@ jasmineTestDir <+= sourceDirectory { src => src / "test" / "webapp" / "static" /
 jasmineConfFile <+= sourceDirectory { src => src / "test" / "webapp" / "static" / "js" / "test.dependencies.js" }
 ```
 
-You can now run the jasmine task to run the tests.
+You can now run the `jasmine` task to run the tests.
 
 See [sbt-jasmine-example](https://github.com/guardian/sbt-jasmine-example) for a full working example project.
 
 
-Paths exposed to your tests
----------------------------
+## Paths exposed to your tests
 
 The following path variables are available to your javascript (in test.dependencies.js and the tests):
 
@@ -97,8 +97,7 @@ EnvJasmine.loadGlobal(EnvJasmine.libDir + "jquery-1.4.4.js");
 ```
 
 
-Running as part of test
------------------------
+## Running as part of test
 
 To automatically run the jasmine plugin as part of your project's test phase you can add the following to you build.sbt:
 
@@ -106,21 +105,30 @@ To automatically run the jasmine plugin as part of your project's test phase you
 (test in Test) <<= (test in Test) dependsOn (jasmine)
 ```
 
-Generating an html runner page
-------------------------------
+## Generating an html runner page
 
 If you need to run your jasmine tests in a browser (for example if, heaven forbid, you have failing tests and want to dubug them)
 you can run the ```jasmine-gen-runner``` task, this will output a runner html file that you can load in a browser to run your jasmine tests.
 A link to the output runner file is output in the sbt console.
 
-Release
--------
-To release a new version, tag it and push the tag to github.
+## Contributions
 
-```
-git tag -a 1.XXX
-git push --tags
-```
+Contributions are always welcomed via pull-requests.  Below is the recommended procedure:
 
+1. Fork it
+2. Create your feature branch (`git checkout -b my-new-feature`)
+3. Commit your changes (`git commit -am 'Add some feature'`)
+4. Push to the branch (`git push origin my-new-feature`)
+5. Create new Pull Request
 
+## Change log
 
+### 1.2.0
+* Ownership assumed by [barnesjd](https://github.com/barnesjd). 
+* Merged [#11](https://github.com/guardian/sbt-jasmine-plugin/pull/11): Removed dependency on jQuery
+* Resolved [#15](https://github.com/guardian/sbt-jasmine-plugin/issues/15): Bumped Rhino version to 1.7R4
+* Resolved [#17](https://github.com/guardian/sbt-jasmine-plugin/issues/17): Fixed bug in `env.js` which caused angular 1.2.1 and up to not load
+* Published binaries as a community sbt plugin
+
+### 0 - 1.1
+* The project was created and maintained on [The Guardian's github page](https://github.com/guardian/sbt-jasmine-plugin).* 
