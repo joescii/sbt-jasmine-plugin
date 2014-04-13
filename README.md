@@ -126,6 +126,9 @@ The following will be greatly appreciated as part of your Pull Request:
 
 ## Change log
 
+### 1.3.0
+* Update jasmine to 2.0
+
 ### 1.2.0
 * Ownership assumed by [barnesjd](https://github.com/barnesjd). 
 * Merged [#11](https://github.com/guardian/sbt-jasmine-plugin/pull/11): Removed dependency on jQuery
