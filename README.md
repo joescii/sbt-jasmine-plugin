@@ -127,7 +127,7 @@ The following will be greatly appreciated as part of your Pull Request:
 ## Change log
 
 ### 1.2.0
-* Ownership assumed by [barnesjd](https://github.com/barnesjd). 
+* Ownership assumed by [joescii](https://github.com/joescii). 
 * Merged [#11](https://github.com/guardian/sbt-jasmine-plugin/pull/11): Removed dependency on jQuery
 * Resolved [#15](https://github.com/guardian/sbt-jasmine-plugin/issues/15): Bumped Rhino version to 1.7R4
 * Resolved [#17](https://github.com/guardian/sbt-jasmine-plugin/issues/17): Fixed bug in `env.js` which caused angular 1.2.1 and up to not load
