@@ -51,9 +51,6 @@ object SbtJasminePlugin extends Plugin {
         jasmineEnvHtml.getAbsolutePath))
       errorsInfile.asInstanceOf[Double]
     }
-
-    val errorCount = errorCounts.sum
-    if (errorCount > 0) throw new JasmineFailedException(errorCount.toInt)
   }
 
   def jasmineGenRunnerTask = (jasmineOutputDir, jasmineTestDir, appJsDir, appJsLibDir, jasmineRequireJsFile, jasmineRequireConfFile, streams) map { (outDir, testJsRoots, appJsRoots, appJsLibRoots, requireJss, requireConfs, s) =>
@@ -157,8 +154,6 @@ object SbtJasminePlugin extends Plugin {
     jasmineOutputDir <<= (target in test) { d => d / "jasmine"}
   )
 }
-
-class JasmineFailedException(count: Int) extends Exception("jasmine failed with " + count + " errors")
 
 class BundledLibraryReaderFactory(resourcePath: String) {
   lazy val cl = this.getClass.getClassLoader
