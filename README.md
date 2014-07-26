@@ -127,7 +127,7 @@ The following will be greatly appreciated as part of your Pull Request:
 ## Change log
 
 ### 1.2.1
-* Errors while parsing JavaScript will now result in a failed test run. 
+* Errors while parsing JavaScript will now result in a failed test run. (Thanks [Mikael Berglund](https://github.com/PhroZenOne))
 
 ### 1.2.0
 * Ownership assumed by [joescii](https://github.com/joescii). 
