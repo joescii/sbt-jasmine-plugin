@@ -185,7 +185,9 @@ function runTests(appJsRoot, appJsLibRoot, testRoot, confFile, envHtml) {
             var windowLoader = 'window.location.assign("file://' + envHtmlOsSpecific + '")';
             EnvJasmine.cx.evaluateString(EnvJasmine.currentScope, windowLoader, 'Executing '+EnvJasmine.specs[i], 0, null);
         } catch (e) {
-            print('error running jasmine test: ' + EnvJasmine.specs[i] + "\n error was: " + e );
+            print(EnvJasmine.red('error running jasmine test: ' + EnvJasmine.specs[i] + "\n error was: " + e.rhinoException));
+            EnvJasmine.failedCount++;
+            EnvJasmine.totalCount++;
         }
         finally {
             if (fileIn) {

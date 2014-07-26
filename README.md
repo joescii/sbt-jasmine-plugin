@@ -126,6 +126,9 @@ The following will be greatly appreciated as part of your Pull Request:
 
 ## Change log
 
+### 1.2.1
+* Errors while parsing JavaScript will now result in a failed test run. 
+
 ### 1.2.0
 * Ownership assumed by [joescii](https://github.com/joescii). 
 * Merged [#11](https://github.com/guardian/sbt-jasmine-plugin/pull/11): Removed dependency on jQuery
