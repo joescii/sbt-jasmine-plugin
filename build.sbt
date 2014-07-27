@@ -6,7 +6,9 @@ name := "sbt-jasmine-plugin"
 
 organization := "com.joescii"
 
-version := "1.2.2-SNAPSHOT"
+homepage := Some(url("https://github.com/joescii/sbt-jasmine-plugin"))
+
+version := "1.2.2"
 
 libraryDependencies += "org.mozilla" % "rhino" % "1.7R4"
 
