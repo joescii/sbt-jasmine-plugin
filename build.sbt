@@ -6,7 +6,7 @@ name := "sbt-jasmine-plugin"
 
 organization := "com.joescii"
 
-version := "1.2.2"
+version := "1.2.2-SNAPSHOT"
 
 libraryDependencies += "org.mozilla" % "rhino" % "1.7R4"
 
@@ -15,14 +15,14 @@ publishArtifact in (Compile, packageDoc) := false
 
 sbtVersion in Global := {
   scalaBinaryVersion.value match {
-    case "2.10" => "0.13.1"
+    case "2.10" => "0.13.5"
     case "2.9.2" => "0.12.4"
   }
 }
 
 scalaVersion in Global := "2.9.2"
 
-crossScalaVersions := Seq("2.9.2", "2.10.3")
+crossScalaVersions := Seq("2.9.2", "2.10.4")
 
 scalacOptions ++= Seq("-unchecked", "-deprecation")
 
