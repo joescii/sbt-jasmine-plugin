@@ -122,6 +122,18 @@ EnvJasmine.loadConfig = function () {
     EnvJasmine.loadGlobal(EnvJasmine.configFile);
 };
 
+// only prints the JavaScript path of the stacktrace.
+EnvJasmine.printRhinoStackTrace = function(exception){
+    var sw = new java.io.StringWriter();
+    exception.printStackTrace(new java.io.PrintWriter(sw));
+    var lines = sw.toString().split('\n');
+    for(var i = 0; i < lines.length; i++){
+        if(lines[i].indexOf("at script") !== -1){
+            print(lines[i]);
+        }
+    }
+}
+
 function runTests(appJsRoot, appJsLibRoot, testRoot, confFile, envHtml) {
     var i, fileIn, len;
 
@@ -185,7 +197,15 @@ function runTests(appJsRoot, appJsLibRoot, testRoot, confFile, envHtml) {
             var windowLoader = 'window.location.assign("file://' + envHtmlOsSpecific + '")';
             EnvJasmine.cx.evaluateString(EnvJasmine.currentScope, windowLoader, 'Executing '+EnvJasmine.specs[i], 0, null);
         } catch (e) {
-            print(EnvJasmine.red('error running jasmine test: ' + EnvJasmine.specs[i] + "\n error was: " + e.rhinoException));
+
+             print(EnvJasmine.red('error running jasmine test: ' + EnvJasmine.specs[i] + "\n error was: " + e));
+             if(e.rhinoException){
+                EnvJasmine.printRhinoStackTrace(e.rhinoException);
+             } else if(e.javaException) {
+                 e.javaException.printStackTrace();
+             } else {
+                throw e;
+             }
             EnvJasmine.failedCount++;
             EnvJasmine.totalCount++;
         }
