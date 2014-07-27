@@ -35,3 +35,9 @@ repository in bintray := "sbt-plugins"
 licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0.html"))
 
 bintrayOrganization in bintray := None
+
+seq(lsSettings :_*)
+
+(LsKeys.tags in LsKeys.lsync) := Seq("sbt", "jasmine", "javascript", "testing")
+
+(description in LsKeys.lsync) := "An sbt plugin for running jasmine tests in your build."
