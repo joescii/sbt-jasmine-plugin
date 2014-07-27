@@ -50,8 +50,11 @@ object SbtJasminePlugin extends Plugin {
         conf.getAbsolutePath,
         jasmineEnvHtml.getAbsolutePath))
 
-      if(errorsInfile.asInstanceOf[Double] > 0) System.exit(1)
+      errorsInfile.asInstanceOf[Double]
     }
+    
+    val errorCount = errorCounts.sum
+    if (errorCount > 0) throw new TestsFailedException()
   }
 
   def jasmineGenRunnerTask = (jasmineOutputDir, jasmineTestDir, appJsDir, appJsLibDir, jasmineRequireJsFile, jasmineRequireConfFile, streams) map { (outDir, testJsRoots, appJsRoots, appJsLibRoots, requireJss, requireConfs, s) =>
