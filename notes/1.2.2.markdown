@@ -2,4 +2,5 @@
 
 * Better error message with stack trace.
 * Fixed bug introduced 1.2.1 where it would continue running tests after failure.
-(Thanks again to [Mikael Berglund](https://github.com/PhroZenOne))
+
+Thanks again to [Mikael Berglund](https://github.com/PhroZenOne) for the contributions!
