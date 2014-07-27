@@ -41,3 +41,9 @@ seq(lsSettings :_*)
 (LsKeys.tags in LsKeys.lsync) := Seq("sbt", "jasmine", "javascript", "testing")
 
 (description in LsKeys.lsync) := "An sbt plugin for running jasmine tests in your build."
+
+(LsKeys.ghUser in LsKeys.lsync) := Some("joescii")
+
+(LsKeys.ghRepo in LsKeys.lsync) := Some("sbt-jasmine-plugin")
+
+(LsKeys.ghBranch in LsKeys.lsync) := Some("master")
