@@ -49,7 +49,8 @@ object SbtJasminePlugin extends Plugin {
         testRoot.getAbsolutePath,
         conf.getAbsolutePath,
         jasmineEnvHtml.getAbsolutePath))
-      errorsInfile.asInstanceOf[Double]
+
+      if(errorsInfile.asInstanceOf[Double] > 0) System.exit(1)
     }
   }
 
@@ -91,8 +92,6 @@ object SbtJasminePlugin extends Plugin {
           generateSpecRequires(testRoot)
         )
       }
-
-      IO.write(outDir / "runner.html", runnerString)
 
     }
     s.log.info("output to: file://" + (if(isWin) "/" else "") + (outDir / "runner.html" getAbsolutePath) )
@@ -142,7 +141,7 @@ object SbtJasminePlugin extends Plugin {
 
   }
 
-  val jasmineSettings: Seq[Project.Setting[_]] = Seq(
+  val jasmineSettings: Seq[Def.Setting[_]] = Seq(
     jasmine <<= jasmineTask,
     appJsDir := Seq(),
     appJsLibDir := Seq(),
