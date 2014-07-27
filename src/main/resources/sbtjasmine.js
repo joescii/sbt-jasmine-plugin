@@ -204,7 +204,11 @@ function runTests(appJsRoot, appJsLibRoot, testRoot, confFile, envHtml) {
              } else if(e.javaException) {
                  e.javaException.printStackTrace();
              } else {
-                throw e;
+                /*
+                 The exception is a regular javascript exception but I could not get a hold of stack trace anywhere. 
+                 Rhino does not support e.stack as chrome or similar. It also does not support rethrowing
+                 as a "throw e" will result in a stack that points to here. :/ Let's do nothing until someone can fix this.
+                 */
              }
             EnvJasmine.failedCount++;
             EnvJasmine.totalCount++;
