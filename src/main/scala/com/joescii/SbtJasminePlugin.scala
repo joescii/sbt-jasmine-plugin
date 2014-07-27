@@ -141,7 +141,7 @@ object SbtJasminePlugin extends Plugin {
 
   }
 
-  val jasmineSettings: Seq[Def.Setting[_]] = Seq(
+  val jasmineSettings: Seq[Project.Setting[_]] = Seq(
     jasmine <<= jasmineTask,
     appJsDir := Seq(),
     appJsLibDir := Seq(),
