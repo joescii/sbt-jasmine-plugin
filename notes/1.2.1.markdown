@@ -1,0 +1,1 @@
+Errors while parsing JavaScript will now result in a failed test run. (Thanks [Mikael Berglund](https://github.com/PhroZenOne))
