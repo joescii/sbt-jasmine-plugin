@@ -95,7 +95,7 @@ object SbtJasminePlugin extends Plugin {
           generateSpecRequires(testRoot)
         )
       }
-
+      IO.write(outDir / "runner.html", runnerString)
     }
     s.log.info("output to: file://" + (if(isWin) "/" else "") + (outDir / "runner.html" getAbsolutePath) )
 
