@@ -126,9 +126,12 @@ The following will be greatly appreciated as part of your Pull Request:
 
 ## Change log
 
+### 1.2.3
+* Fixed bug introduced in 1.2.2 where jasmine-gen-runner would not create all needed files.
+
 ### 1.2.2
 * Better error message with stack trace.
-* Fixed bug introduced 1.2.1 where it would continue running tests after failure.
+* Fixed bug introduced in 1.2.1 where it would continue running tests after failure.
 
 ### 1.2.1
 * Errors while parsing JavaScript will now result in a failed test run. (Thanks [Mikael Berglund](https://github.com/PhroZenOne))
