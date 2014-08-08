@@ -1,0 +1,5 @@
+#scala #javascript @jasminebdd @scala_sbt
+
+* Fixed bug introduced in 1.2.2 where jasmine-gen-runner would not create all needed files.
+
+Thanks again to [Mikael Berglund](https://github.com/PhroZenOne) for the contributions!
