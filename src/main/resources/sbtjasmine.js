@@ -118,7 +118,7 @@ EnvJasmine.disableColor = (function (env) {
 EnvJasmine.results = [];
 
 EnvJasmine.loadConfig = function () {
-    EnvJasmine.loadLibGlobal("jasmineEnv.js")
+    EnvJasmine.loadLibGlobal("jasmineEnv.js");
     EnvJasmine.loadGlobal(EnvJasmine.configFile);
 };
 
@@ -145,7 +145,6 @@ function runTests(appJsRoot, appJsLibRoot, testRoot, confFile, envHtml) {
     EnvJasmine.totalCount = 0;
 
     EnvJasmine.loadConfig();
-    
     if (typeof EnvJasmine.reporterClass === "undefined") {
     	// Use the standard reporter
     	EnvJasmine.reporterClass = RhinoReporter;

@@ -22,7 +22,7 @@ sbtVersion in Global := {
   }
 }
 
-scalaVersion in Global := "2.9.2"
+scalaVersion in Global := "2.10.4"
 
 crossScalaVersions := Seq("2.9.2", "2.10.4")
 

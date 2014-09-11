@@ -62,6 +62,8 @@ object SbtJasminePlugin extends Plugin {
     s.log.info("generating runner...")
 
     outputBundledResource("jasmine/jasmine.js", outDir / "jasmine.js")
+    outputBundledResource("jasmine/boot.js", outDir / "boot.js")
+    outputBundledResource("jasmine/boot-rhino.js", outDir / "boot-rhino.js")
     outputBundledResource("jasmine/jasmine-html.js", outDir / "jasmine-html.js")
     outputBundledResource("jasmine/jasmine.css", outDir / "jasmine.css")
 
