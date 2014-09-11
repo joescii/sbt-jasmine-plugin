@@ -97,7 +97,7 @@
   /**
    * ## Execution
    *
-   * Replace the browser window's `onload`, ensure it's called, and then run all of the loaded specs. This includes initializing the `HtmlReporter` instance and then executing the loaded Jasmine environment. All of this will happen after all of the specs are loaded.
+   * Replace the browser window's `onload`, ensure it's called, and then run all of the loaded specs.
    */
   var currentWindowOnload = window.onload;
 
@@ -106,7 +106,10 @@
       currentWindowOnload();
     }
     htmlReporter.initialize();
-    env.execute();
+
+    // Some modules may be loaded asynchronously so jasmine env is not executed here.
+    // Instead it is executed in html file. Global marker needs to be set in order to avoid double htmlReporter initialization
+    window.alreadyLoaded = true;
   };
 
   /**
