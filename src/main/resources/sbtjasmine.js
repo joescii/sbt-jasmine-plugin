@@ -118,7 +118,7 @@ EnvJasmine.disableColor = (function (env) {
 EnvJasmine.results = [];
 
 EnvJasmine.loadConfig = function () {
-    EnvJasmine.loadLibGlobal("jasmineEnv.js");
+    EnvJasmine.loadLibGlobal("jasmine"+jasmineEdition+"Env.js");
     EnvJasmine.loadGlobal(EnvJasmine.configFile);
 };
 
@@ -176,7 +176,7 @@ function runTests(appJsRoot, appJsLibRoot, testRoot, confFile, envHtml) {
     for (i = 0, len = EnvJasmine.specs.length; i < len; ++i) {
         try {
             // hack required to avoid evaluating previous tests again
-            jasmine.getEnv().topSuite().children = [];
+            if(jasmineEdition === 2) jasmine.getEnv().topSuite().children = [];
 
             EnvJasmine.currentScope = {};
             EnvJasmine.load = EnvJasmine.loadFactory(EnvJasmine.currentScope);

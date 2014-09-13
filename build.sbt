@@ -8,7 +8,7 @@ organization := "com.joescii"
 
 homepage := Some(url("https://github.com/joescii/sbt-jasmine-plugin"))
 
-version := "1.2.3"
+version := "1.3.0-SNAPSHOT"
 
 libraryDependencies += "org.mozilla" % "rhino" % "1.7R4"
 
@@ -22,7 +22,7 @@ sbtVersion in Global := {
   }
 }
 
-scalaVersion in Global := "2.10.4"
+scalaVersion in Global := "2.9.2"
 
 crossScalaVersions := Seq("2.9.2", "2.10.4")
 
