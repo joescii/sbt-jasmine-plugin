@@ -34,20 +34,7 @@
     <script>
 	require([%s],
         function() {
-            // need to check if onload handler set by boot.js has been executed
-            if(window.alreadyLoaded === true){
-                // if onload handler has been executed we can safely invoke jasmine
-                jasmine.getEnv().execute();
-            }else{
-                // if onload handler has not been executed we need to modify it to invoke jasmine too
-                var currentWindowOnload = window.onload;
-                window.onload = function() {
-                    if (currentWindowOnload) {
-                        currentWindowOnload();
-                    }
-                    jasmine.getEnv().execute();
-                };
-            }
+            %s
         });
 
     </script>

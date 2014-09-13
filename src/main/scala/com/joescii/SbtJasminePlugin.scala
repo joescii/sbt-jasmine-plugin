@@ -65,11 +65,15 @@ object SbtJasminePlugin extends Plugin {
 
     s.log.info("generating runner...")
 
-    outputBundledResource("jasmine/jasmine.js", outDir / "jasmine.js")
-    outputBundledResource("jasmine/boot.js", outDir / "boot.js")
-    outputBundledResource("jasmine/boot-rhino.js", outDir / "boot-rhino.js")
-    outputBundledResource("jasmine/jasmine-html.js", outDir / "jasmine-html.js")
-    outputBundledResource("jasmine/jasmine.css", outDir / "jasmine.css")
+    val dir = "jasmine"+edition
+
+    outputBundledResource(dir+"/jasmine.js", outDir / "jasmine.js")
+    if(edition == 2) {
+      outputBundledResource(dir+"/boot.js", outDir / "boot.js")
+      outputBundledResource(dir+"/boot-rhino.js", outDir / "boot-rhino.js")
+    }
+    outputBundledResource(dir+"/jasmine-html.js", outDir / "jasmine-html.js")
+    outputBundledResource(dir+"/jasmine.css", outDir / "jasmine.css")
 
     val isWin = java.lang.System.getProperty("os.name").indexOf("Windows") > -1;
 
@@ -89,7 +93,8 @@ object SbtJasminePlugin extends Plugin {
           "file:///" + appJsLibRoot.getAbsolutePath.replaceAll("\\\\", "\\\\\\\\"),
           "file:///" + requireJs.getAbsolutePath.replaceAll("\\\\", "\\\\\\\\"),
           "file:///" + requireConf.getAbsolutePath.replaceAll("\\\\", "\\\\\\\\"),
-          generateSpecRequires(testRoot)
+          generateSpecRequires(testRoot),
+          getRunnerFn(edition)
         )
       } else{
         runnerString = loadRunnerTemplate.format(
@@ -98,7 +103,8 @@ object SbtJasminePlugin extends Plugin {
           appJsLibRoot.getAbsolutePath,
           requireJs.getAbsolutePath,
           requireConf.getAbsolutePath,
-          generateSpecRequires(testRoot)
+          generateSpecRequires(testRoot),
+          getRunnerFn(edition)
         )
       }
       IO.write(outDir / "runner.html", runnerString)
@@ -131,6 +137,30 @@ object SbtJasminePlugin extends Plugin {
 
     specModules.map("'" + _ + "'").mkString(", ")
   }
+
+  def getRunnerFn(edition:Int) =
+    if(edition == 1)
+      """
+        |jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
+        |jasmine.getEnv().execute();
+      """.stripMargin
+    else
+      """
+        |// need to check if onload handler set by boot.js has been executed
+        |if(window.alreadyLoaded === true){
+        |    // if onload handler has been executed we can safely invoke jasmine
+        |    jasmine.getEnv().execute();
+        |}else{
+        |    // if onload handler has not been executed we need to modify it to invoke jasmine too
+        |    var currentWindowOnload = window.onload;
+        |    window.onload = function() {
+        |        if (currentWindowOnload) {
+        |            currentWindowOnload();
+        |        }
+        |        jasmine.getEnv().execute();
+        |    };
+        |}
+      """.stripMargin
 
   def bundledScript(fileName: String) = {
     val cl = this.getClass.getClassLoader
