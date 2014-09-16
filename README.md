@@ -127,8 +127,8 @@ The following will be greatly appreciated as part of your Pull Request:
 ## Change log
 
 ### 1.3.0
-* Updated to utilize Jasmine 2.0.3 by default.
-* Can optionally specify the Jasmine edition via sbt setting `jasmineEdition`.
+* Updated to utilize Jasmine 2.0.3.
+* Can optionally specify the Jasmine edition (1 or 2) via sbt setting `jasmineEdition`.
 * Jasmine edition 1 has been updated from 1.1.0 to 1.3.1.
 
 ### 1.2.3
