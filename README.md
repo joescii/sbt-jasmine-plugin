@@ -105,8 +105,8 @@ To automatically run the jasmine plugin as part of your project's test phase you
 
 ## Generating an html runner page
 
-If you need to run your jasmine tests in a browser (for example if, heaven forbid, you have failing tests and want to dubug them)
-you can run the ```jasmine-gen-runner``` task, this will output a runner html file that you can load in a browser to run your jasmine tests.
+If you need to run your jasmine tests in a browser (for example if, heaven forbid, you have failing tests and want to debug them)
+you can run the ```jasmineGenRunner``` task, this will output a runner html file that you can load in a browser to run your jasmine tests.
 A link to the output runner file is output in the sbt console.
 
 ## Contributions
