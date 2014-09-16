@@ -22,8 +22,12 @@ object SbtJasminePlugin extends Plugin {
   lazy val jasmineOutputDir = SettingKey[File]("jasmineOutputDir", "directory to output jasmine files to.")
   lazy val jasmineGenRunner = TaskKey[Unit]("jasmine-gen-runner", "Generates a jasmine test runner html page.")
 
+  def validateEdition(edition:Int) = if(edition != 1 && edition != 2) throw new RuntimeException("jasmineEdition must be 1 or 2")
+
   def jasmineTask = (jasmineTestDir, appJsDir, appJsLibDir, jasmineConfFile, jasmineOutputDir, jasmineEdition, streams) map { 
     (testJsRoots, appJsRoots, appJsLibRoots, confs, outDir, edition, s) =>
+
+    validateEdition(edition)
 
     s.log.info("running jasmine"+edition+"...")
 
@@ -62,6 +66,8 @@ object SbtJasminePlugin extends Plugin {
 
   def jasmineGenRunnerTask = (jasmineOutputDir, jasmineTestDir, appJsDir, appJsLibDir, jasmineRequireJsFile, jasmineRequireConfFile, jasmineEdition, streams) map { 
     (outDir, testJsRoots, appJsRoots, appJsLibRoots, requireJss, requireConfs, edition, s) =>
+
+    validateEdition(edition)
 
     s.log.info("generating runner...")
 
