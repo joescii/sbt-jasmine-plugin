@@ -118,7 +118,7 @@ EnvJasmine.disableColor = (function (env) {
 EnvJasmine.results = [];
 
 EnvJasmine.loadConfig = function () {
-    EnvJasmine.loadLibGlobal("jasmineEnv.js")
+    EnvJasmine.loadLibGlobal("jasmine"+jasmineEdition+"Env.js");
     EnvJasmine.loadGlobal(EnvJasmine.configFile);
 };
 
@@ -145,7 +145,6 @@ function runTests(appJsRoot, appJsLibRoot, testRoot, confFile, envHtml) {
     EnvJasmine.totalCount = 0;
 
     EnvJasmine.loadConfig();
-    
     if (typeof EnvJasmine.reporterClass === "undefined") {
     	// Use the standard reporter
     	EnvJasmine.reporterClass = RhinoReporter;
@@ -174,8 +173,11 @@ function runTests(appJsRoot, appJsLibRoot, testRoot, confFile, envHtml) {
         });
     }
 
-    for (i = 0, len = EnvJasmine.specs.length >>> 0; i < len; i += 1) {
+    for (i = 0, len = EnvJasmine.specs.length; i < len; ++i) {
         try {
+            // hack required to avoid evaluating previous tests again
+            if(jasmineEdition === 2) jasmine.getEnv().topSuite().children = [];
+
             EnvJasmine.currentScope = {};
             EnvJasmine.load = EnvJasmine.loadFactory(EnvJasmine.currentScope);
             EnvJasmine.specFile = EnvJasmine.specs[i];
@@ -189,6 +191,7 @@ function runTests(appJsRoot, appJsLibRoot, testRoot, confFile, envHtml) {
             }
             var specLoader = 'require(["' + specPathOsSpecific + '"]);';
             EnvJasmine.cx.evaluateString(EnvJasmine.currentScope, specLoader, 'Loading '+EnvJasmine.specFile, 0, null);
+
             print("running the jasmine tests");
             var envHtmlOsSpecific = '' + envHtml; // make sure it's a javascript string object rather than a java object
             if(EnvJasmine.environment == 'WIN') {
@@ -196,6 +199,7 @@ function runTests(appJsRoot, appJsLibRoot, testRoot, confFile, envHtml) {
             }
             var windowLoader = 'window.location.assign("file://' + envHtmlOsSpecific + '")';
             EnvJasmine.cx.evaluateString(EnvJasmine.currentScope, windowLoader, 'Executing '+EnvJasmine.specs[i], 0, null);
+            print();
         } catch (e) {
 
              print(EnvJasmine.red('error running jasmine test: ' + EnvJasmine.specs[i] + "\n error was: " + e));

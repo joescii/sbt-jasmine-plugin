@@ -10,6 +10,7 @@ import java.io.{FileReader, InputStreamReader}
 
 object SbtJasminePlugin extends Plugin {
 
+  lazy val jasmineEdition = SettingKey[Int]("jasmineEdition", "The edition of Jasmine to use, i.e. the major version number 1 or 2")
   lazy val jasmineTestDir = SettingKey[Seq[File]]("jasmineTestDir", "Path to directory containing the /specs and /mocks directories")
   lazy val appJsDir = SettingKey[Seq[File]]("appJsDir", "the root directory where the application js files live")
   lazy val appJsLibDir = SettingKey[Seq[File]]("appJsLibDir", "the root directory where the application's js library files live")
@@ -21,9 +22,14 @@ object SbtJasminePlugin extends Plugin {
   lazy val jasmineOutputDir = SettingKey[File]("jasmineOutputDir", "directory to output jasmine files to.")
   lazy val jasmineGenRunner = TaskKey[Unit]("jasmine-gen-runner", "Generates a jasmine test runner html page.")
 
-  def jasmineTask = (jasmineTestDir, appJsDir, appJsLibDir, jasmineConfFile, jasmineOutputDir, streams) map { (testJsRoots, appJsRoots, appJsLibRoots, confs, outDir, s) =>
+  def validateEdition(edition:Int) = if(edition != 1 && edition != 2) throw new RuntimeException("jasmineEdition must be 1 or 2")
 
-    s.log.info("running jasmine...")
+  def jasmineTask = (jasmineTestDir, appJsDir, appJsLibDir, jasmineConfFile, jasmineOutputDir, jasmineEdition, streams) map { 
+    (testJsRoots, appJsRoots, appJsLibRoots, confs, outDir, edition, s) =>
+
+    validateEdition(edition)
+
+    s.log.info("running jasmine"+edition+"...")
 
     val errorCounts = for {
         testRoot <- testJsRoots
@@ -36,6 +42,7 @@ object SbtJasminePlugin extends Plugin {
       scope.init(jscontext)
 
       jscontext.evaluateString(scope, "var arguments = [];", "Evil Hack to simulate command-line args to help r.js", 0, null)
+      jscontext.evaluateString(scope, "var jasmineEdition = "+edition+";", "jasmineEdition.js", 0, null)
       jscontext.evaluateReader(scope, bundledScript("sbtjasmine.js"), "sbtjasmine.js", 1, null)
 
       val jasmineEnvHtml = outDir / "jasmineEnv.html"
@@ -57,13 +64,22 @@ object SbtJasminePlugin extends Plugin {
     if (errorCount > 0) throw new TestsFailedException()
   }
 
-  def jasmineGenRunnerTask = (jasmineOutputDir, jasmineTestDir, appJsDir, appJsLibDir, jasmineRequireJsFile, jasmineRequireConfFile, streams) map { (outDir, testJsRoots, appJsRoots, appJsLibRoots, requireJss, requireConfs, s) =>
+  def jasmineGenRunnerTask = (jasmineOutputDir, jasmineTestDir, appJsDir, appJsLibDir, jasmineRequireJsFile, jasmineRequireConfFile, jasmineEdition, streams) map { 
+    (outDir, testJsRoots, appJsRoots, appJsLibRoots, requireJss, requireConfs, edition, s) =>
+
+    validateEdition(edition)
 
     s.log.info("generating runner...")
 
-    outputBundledResource("jasmine/jasmine.js", outDir / "jasmine.js")
-    outputBundledResource("jasmine/jasmine-html.js", outDir / "jasmine-html.js")
-    outputBundledResource("jasmine/jasmine.css", outDir / "jasmine.css")
+    val dir = "jasmine"+edition
+
+    outputBundledResource(dir+"/jasmine.js", outDir / "jasmine.js")
+    if(edition == 2) {
+      outputBundledResource(dir+"/boot.js", outDir / "boot.js")
+      outputBundledResource(dir+"/boot-rhino.js", outDir / "boot-rhino.js")
+    }
+    outputBundledResource(dir+"/jasmine-html.js", outDir / "jasmine-html.js")
+    outputBundledResource(dir+"/jasmine.css", outDir / "jasmine.css")
 
     val isWin = java.lang.System.getProperty("os.name").indexOf("Windows") > -1;
 
@@ -83,7 +99,8 @@ object SbtJasminePlugin extends Plugin {
           "file:///" + appJsLibRoot.getAbsolutePath.replaceAll("\\\\", "\\\\\\\\"),
           "file:///" + requireJs.getAbsolutePath.replaceAll("\\\\", "\\\\\\\\"),
           "file:///" + requireConf.getAbsolutePath.replaceAll("\\\\", "\\\\\\\\"),
-          generateSpecRequires(testRoot)
+          generateSpecRequires(testRoot),
+          getRunnerFn(edition)
         )
       } else{
         runnerString = loadRunnerTemplate.format(
@@ -92,7 +109,8 @@ object SbtJasminePlugin extends Plugin {
           appJsLibRoot.getAbsolutePath,
           requireJs.getAbsolutePath,
           requireConf.getAbsolutePath,
-          generateSpecRequires(testRoot)
+          generateSpecRequires(testRoot),
+          getRunnerFn(edition)
         )
       }
       IO.write(outDir / "runner.html", runnerString)
@@ -126,6 +144,30 @@ object SbtJasminePlugin extends Plugin {
     specModules.map("'" + _ + "'").mkString(", ")
   }
 
+  def getRunnerFn(edition:Int) =
+    if(edition == 1)
+      """
+        |jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
+        |jasmine.getEnv().execute();
+      """.stripMargin
+    else
+      """
+        |// need to check if onload handler set by boot.js has been executed
+        |if(window.alreadyLoaded === true){
+        |    // if onload handler has been executed we can safely invoke jasmine
+        |    jasmine.getEnv().execute();
+        |}else{
+        |    // if onload handler has not been executed we need to modify it to invoke jasmine too
+        |    var currentWindowOnload = window.onload;
+        |    window.onload = function() {
+        |        if (currentWindowOnload) {
+        |            currentWindowOnload();
+        |        }
+        |        jasmine.getEnv().execute();
+        |    };
+        |}
+      """.stripMargin
+
   def bundledScript(fileName: String) = {
     val cl = this.getClass.getClassLoader
     val is = cl.getResourceAsStream(fileName)
@@ -153,7 +195,8 @@ object SbtJasminePlugin extends Plugin {
     jasmineRequireJsFile := Seq(),
     jasmineRequireConfFile := Seq(),
     jasmineGenRunner <<= jasmineGenRunnerTask,
-    jasmineOutputDir <<= (target in test) { d => d / "jasmine"}
+    jasmineOutputDir <<= (target in test) { d => d / "jasmine"},
+    jasmineEdition := 2
   )
 }
 

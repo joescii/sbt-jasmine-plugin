@@ -7,7 +7,7 @@ An SBT plugin for running jasmine tests in your build.
 Add this plugin like any other to your `project/plugin.sbt` file:
 
 ```scala
-addSbtPlugin("com.joescii" % "sbt-jasmine-plugin" % "1.2.3")
+addSbtPlugin("com.joescii" % "sbt-jasmine-plugin" % "1.3.0")
 ```
 
 You will also need to import the plugin's settings in the usual way in your `build.sbt` file:
@@ -34,7 +34,7 @@ Override the following settings in your build:
  * jasmineConfFile - the test.dependencies.js configuration file that loads the required application js and lib js files into the test context.
  * jasmineRequireJsFile - the file that is your require.js library file
  * jasmineRequireConfFile - the require.conf.js configuration file for require.js
-
+ * jasmineEdition - the edition of Jasmine to use, i.e. the major version number 1 or 2
 
 For a project laid out as follows:
 
@@ -125,6 +125,11 @@ The following will be greatly appreciated as part of your Pull Request:
 2. If applicable, update the sample project with your feature enhancement.
 
 ## Change log
+
+### 1.3.0
+* Updated to utilize Jasmine 2.0.3 by default.
+* Can optionally specify the Jasmine edition via sbt setting `jasmineEdition`.
+* Jasmine edition 1 has been updated from 1.1.0 to 1.3.1.
 
 ### 1.2.3
 * Fixed bug introduced in 1.2.2 where jasmine-gen-runner would not create all needed files.
