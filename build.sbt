@@ -8,9 +8,9 @@ organization := "com.joescii"
 
 homepage := Some(url("https://github.com/joescii/sbt-jasmine-plugin"))
 
-version := "1.3.0"
+version := "1.3.1"
 
-libraryDependencies += "org.mozilla" % "rhino" % "1.7R4"
+libraryDependencies += "org.mozilla" % "rhino" % "1.7.7"
 
 // don't bother publishing javadoc
 publishArtifact in (Compile, packageDoc) := false
@@ -28,15 +28,15 @@ crossScalaVersions := Seq("2.9.2", "2.10.4")
 
 scalacOptions ++= Seq("-unchecked", "-deprecation")
 
-publishMavenStyle := false
+//publishMavenStyle := false
 
-bintrayPublishSettings
+//bintrayPublishSettings
 
-repository in bintray := "sbt-plugins"
+//repository in bintray := "sbt-plugins"
 
 licenses += ("Apache-2.0", url("http://www.apache.org/licenses/LICENSE-2.0.html"))
 
-bintrayOrganization in bintray := None
+//bintrayOrganization in bintray := None
 
 seq(lsSettings :_*)
 
