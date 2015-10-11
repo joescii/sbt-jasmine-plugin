@@ -200,6 +200,7 @@ object SbtJasminePlugin extends Plugin {
   )
 }
 
+// Used in JS, DO NOT REMOVE
 class BundledLibraryReaderFactory(resourcePath: String) {
   lazy val cl = this.getClass.getClassLoader
   def reader = new InputStreamReader(cl.getResourceAsStream(resourcePath))
