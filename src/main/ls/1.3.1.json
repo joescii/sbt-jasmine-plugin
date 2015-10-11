@@ -1,0 +1,21 @@
+{
+  "organization" : "com.joescii",
+  "name" : "sbt-jasmine-plugin",
+  "version" : "1.3.1",
+  "description" : "An sbt plugin for running jasmine tests in your build.",
+  "site" : "https://github.com/joescii/sbt-jasmine-plugin",
+  "tags" : [ "sbt", "jasmine", "javascript", "testing" ],
+  "docs" : "",
+  "resolvers" : [ "https://oss.sonatype.org/content/repositories/releases" ],
+  "dependencies" : [ {
+    "organization" : "org.mozilla",
+    "name" : "rhino",
+    "version" : "1.7.7"
+  } ],
+  "scalas" : [ "2.9.2", "2.10.4" ],
+  "licenses" : [ {
+    "name" : "Apache-2.0",
+    "url" : "http://www.apache.org/licenses/LICENSE-2.0.html"
+  } ],
+  "sbt" : true
+}
