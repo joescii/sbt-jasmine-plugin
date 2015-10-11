@@ -5,7 +5,7 @@ import Keys._
 import io.Source
 import org.mozilla.javascript.{ScriptableObject, ContextFactory, Context, Function => JsFunction}
 import org.mozilla.javascript.tools.shell.{Global, Main}
-import java.io.{FileReader, InputStreamReader}
+import java.io.{BufferedReader, FileReader, InputStreamReader}
 
 
 object SbtJasminePlugin extends Plugin {
@@ -23,6 +23,24 @@ object SbtJasminePlugin extends Plugin {
   lazy val jasmineGenRunner = TaskKey[Unit]("jasmine-gen-runner", "Generates a jasmine test runner html page.")
 
   def validateEdition(edition:Int) = if(edition != 1 && edition != 2) throw new RuntimeException("jasmineEdition must be 1 or 2")
+
+  /** First looks to see if there is a jasmine webjar on the path. If not found, then use what we deliver */
+  def jasmineResourceRoot(edition:Int):String = {
+    val VersionRegex = """^\Qversion=\E(.*)$""".r
+    val cl = this.getClass.getClassLoader
+    val maybeWebjar = for {
+      pomProps <- Option(cl.getResourceAsStream("META-INF/maven/org.webjars/jasmine/pom.properties"))
+      propReader = new BufferedReader(new InputStreamReader(pomProps))
+      version <- Stream.continually(propReader.readLine()).takeWhile(_ != null).collectFirst { case VersionRegex(v) => v }
+      jasmine <- Option(cl.getResource("META-INF/resources/webjars/jasmine/"+version+"/jasmine.js"))
+    } yield {
+      "META-INF/resources/webjars/jasmine/"+version
+    }
+    maybeWebjar getOrElse (
+      if(edition == 1) "jasmine1"
+      else "jasmine2"
+    )
+  }
 
   def jasmineTask = (jasmineTestDir, appJsDir, appJsLibDir, jasmineConfFile, jasmineOutputDir, jasmineEdition, streams) map { 
     (testJsRoots, appJsRoots, appJsLibRoots, confs, outDir, edition, s) =>
@@ -43,6 +61,7 @@ object SbtJasminePlugin extends Plugin {
 
       jscontext.evaluateString(scope, "var arguments = [];", "Evil Hack to simulate command-line args to help r.js", 0, null)
       jscontext.evaluateString(scope, "var jasmineEdition = "+edition+";", "jasmineEdition.js", 0, null)
+      jscontext.evaluateString(scope, "var jasmineResourceRoot = \""+jasmineResourceRoot(edition)+"\";", "Pointing to the root of jasmine resources", 0, null)
       jscontext.evaluateReader(scope, bundledScript("sbtjasmine.js"), "sbtjasmine.js", 1, null)
 
       val jasmineEnvHtml = outDir / "jasmineEnv.html"
