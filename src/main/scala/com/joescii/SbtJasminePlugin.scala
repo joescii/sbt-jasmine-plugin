@@ -36,10 +36,7 @@ object SbtJasminePlugin extends Plugin {
     } yield {
       "META-INF/resources/webjars/jasmine/"+version
     }
-    maybeWebjar getOrElse (
-      if(edition == 1) "jasmine1"
-      else "jasmine2"
-    )
+    maybeWebjar getOrElse ("jasmine"+edition)
   }
 
   def jasmineTask = (jasmineTestDir, appJsDir, appJsLibDir, jasmineConfFile, jasmineOutputDir, jasmineEdition, streams) map { 
