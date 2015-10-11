@@ -81,7 +81,7 @@ object SbtJasminePlugin extends Plugin {
     outputBundledResource(dir+"/jasmine-html.js", outDir / "jasmine-html.js")
     outputBundledResource(dir+"/jasmine.css", outDir / "jasmine.css")
 
-    val isWin = java.lang.System.getProperty("os.name").indexOf("Windows") > -1;
+    val isWin = java.lang.System.getProperty("os.name").indexOf("Windows") > -1
 
     for {
       testRoot <- testJsRoots
@@ -90,29 +90,28 @@ object SbtJasminePlugin extends Plugin {
       requireJs <- requireJss
       requireConf <- requireConfs
     } {
-      var runnerString = "";
-
-      if(isWin) {
-        runnerString = loadRunnerTemplate.format(
-          "file:///" + testRoot.getAbsolutePath.replaceAll("\\\\", "\\\\\\\\"),
-          "file:///" + appJsRoot.getAbsolutePath.replaceAll("\\\\", "\\\\\\\\"),
-          "file:///" + appJsLibRoot.getAbsolutePath.replaceAll("\\\\", "\\\\\\\\"),
-          "file:///" + requireJs.getAbsolutePath.replaceAll("\\\\", "\\\\\\\\"),
-          "file:///" + requireConf.getAbsolutePath.replaceAll("\\\\", "\\\\\\\\"),
-          generateSpecRequires(testRoot),
-          getRunnerFn(edition)
-        )
-      } else{
-        runnerString = loadRunnerTemplate.format(
-          testRoot.getAbsolutePath,
-          appJsRoot.getAbsolutePath,
-          appJsLibRoot.getAbsolutePath,
-          requireJs.getAbsolutePath,
-          requireConf.getAbsolutePath,
-          generateSpecRequires(testRoot),
-          getRunnerFn(edition)
-        )
-      }
+      val runnerString =
+        if(isWin) {
+          loadRunnerTemplate.format(
+            "file:///" + testRoot.getAbsolutePath.replaceAll("\\\\", "\\\\\\\\"),
+            "file:///" + appJsRoot.getAbsolutePath.replaceAll("\\\\", "\\\\\\\\"),
+            "file:///" + appJsLibRoot.getAbsolutePath.replaceAll("\\\\", "\\\\\\\\"),
+            "file:///" + requireJs.getAbsolutePath.replaceAll("\\\\", "\\\\\\\\"),
+            "file:///" + requireConf.getAbsolutePath.replaceAll("\\\\", "\\\\\\\\"),
+            generateSpecRequires(testRoot),
+            getRunnerFn(edition)
+          )
+        } else {
+          loadRunnerTemplate.format(
+            testRoot.getAbsolutePath,
+            appJsRoot.getAbsolutePath,
+            appJsLibRoot.getAbsolutePath,
+            requireJs.getAbsolutePath,
+            requireConf.getAbsolutePath,
+            generateSpecRequires(testRoot),
+            getRunnerFn(edition)
+          )
+        }
       IO.write(outDir / "runner.html", runnerString)
     }
     s.log.info("output to: file://" + (if(isWin) "/" else "") + (outDir / "runner.html" getAbsolutePath) )
