@@ -34,6 +34,7 @@ object SbtJasminePlugin extends Plugin {
       version <- Stream.continually(propReader.readLine()).takeWhile(_ != null).collectFirst { case VersionRegex(v) => v }
       jasmine <- Option(cl.getResource("META-INF/resources/webjars/jasmine/"+version+"/jasmine.js"))
     } yield {
+      pomProps.close()
       "META-INF/resources/webjars/jasmine/"+version
     }
     maybeWebjar getOrElse ("jasmine"+edition)
