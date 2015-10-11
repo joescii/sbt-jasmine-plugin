@@ -1,0 +1,6 @@
+#scala #javascript @jasminebdd @scala_sbt
+
+* Update Rhino to 1.7.7
+* Can optionally provide jasmine via webjars for fine-grained control over jasmine version.
+
+Thanks to [Daniel Capo Sobral](https://github.com/dcsobral) and [SanityResort](https://github.com/SanityResort) for the contributions!

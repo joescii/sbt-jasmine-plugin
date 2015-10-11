@@ -4,9 +4,12 @@ An SBT plugin for running jasmine tests in your build.
 
 ## Installation
 
-Add this plugin like any other to your `project/plugin.sbt` file:
+Add this plugin like any other to your `project/plugin.sbt` file, optionally providing a [webjar](http://www.webjars.org/) dependency to select your preferred jasmine version:
 
 ```scala
+// Optionally provide your preferred jasmine version via webjars
+libraryDependencies += "org.webjars" % "jasmine" % "2.2.0"
+
 addSbtPlugin("com.joescii" % "sbt-jasmine-plugin" % "1.4.0")
 ```
 
@@ -34,7 +37,7 @@ Override the following settings in your build:
  * jasmineConfFile - the test.dependencies.js configuration file that loads the required application js and lib js files into the test context.
  * jasmineRequireJsFile - the file that is your require.js library file
  * jasmineRequireConfFile - the require.conf.js configuration file for require.js
- * jasmineEdition - the edition of Jasmine to use, i.e. the major version number 1 or 2
+ * jasmineEdition - the edition of Jasmine to use, i.e. the major version number 1 or 2. Only needed in the case you want to use Jasmine 1 without providing a webjar.
 
 For a project laid out as follows:
 
@@ -127,8 +130,9 @@ The following will be greatly appreciated as part of your Pull Request:
 ## Change log
 
 
-### 1.3.1
+### 1.4.0
 * Update Rhino to 1.7.7
+* Can optionally provide jasmine via webjars for fine-grained control over jasmine version.
 
 ### 1.3.0
 * Updated to utilize Jasmine 2.0.3.
