@@ -1,5 +1,3 @@
-import bintray.Keys._
-
 sbtPlugin := true
 
 name := "sbt-jasmine-plugin"
@@ -8,7 +6,7 @@ organization := "com.joescii"
 
 homepage := Some(url("https://github.com/joescii/sbt-jasmine-plugin"))
 
-version := "1.4.0-SNAPSHOT"
+version := "1.4.0"
 
 libraryDependencies += "org.mozilla" % "rhino" % "1.7.7"
 
