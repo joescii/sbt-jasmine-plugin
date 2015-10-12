@@ -8,9 +8,9 @@ Add this plugin like any other to your `project/plugin.sbt` file, optionally pro
 
 ```scala
 // Optionally provide your preferred jasmine version via webjars
-libraryDependencies += "org.webjars" % "jasmine" % "2.2.0"
+libraryDependencies += "org.webjars.bower" % "jasmine" % "2.3.4"
 
-addSbtPlugin("com.joescii" % "sbt-jasmine-plugin" % "1.4.0")
+addSbtPlugin("com.joescii" % "sbt-jasmine-plugin" % "1.4.1")
 ```
 
 You will also need to import the plugin's settings in the usual way in your `build.sbt` file:

@@ -28,7 +28,7 @@ object SbtJasminePlugin extends Plugin {
   lazy val cl = this.getClass.getClassLoader
 
   lazy val webjarJasmineVersion:Option[String] = for {
-    pomProps <- Option(cl.getResourceAsStream("META-INF/maven/org.webjars/jasmine/pom.properties"))
+    pomProps <- Option(cl.getResourceAsStream("META-INF/maven/org.webjars.bower/jasmine/pom.properties"))
     propReader = new BufferedReader(new InputStreamReader(pomProps))
     version <- Stream.continually(propReader.readLine()).takeWhile(_ != null).collectFirst { case VersionRegex(v) => v }
   } yield {
@@ -44,10 +44,10 @@ object SbtJasminePlugin extends Plugin {
   def jasmineResourceRoot(edition:Int):String = {
     val maybeWebjar = for {
       version <- webjarJasmineVersion
-      jasmine <- Option(cl.getResource("META-INF/resources/webjars/jasmine/"+version+"/jasmine.js"))
+      jasmine <- Option(cl.getResource("META-INF/resources/webjars/jasmine/" + version + "/lib/jasmine-core/jasmine.js"))
     } yield {
-      "META-INF/resources/webjars/jasmine/"+version
-    }
+        "META-INF/resources/webjars/jasmine/" + version + "/lib/jasmine-core"
+      }
     maybeWebjar getOrElse ("jasmine"+edition)
   }
 
