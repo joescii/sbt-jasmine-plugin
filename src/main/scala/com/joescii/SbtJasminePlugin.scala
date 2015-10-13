@@ -2,10 +2,9 @@ package com.joescii
 
 import sbt._
 import Keys._
-import io.Source
-import org.mozilla.javascript.{ScriptableObject, ContextFactory, Context, Function => JsFunction}
-import org.mozilla.javascript.tools.shell.{Global, Main}
-import java.io.{BufferedReader, FileReader, InputStreamReader}
+import org.mozilla.javascript.{ContextFactory, Function => JsFunction}
+import org.mozilla.javascript.tools.shell.Global
+import java.io.{BufferedReader, InputStreamReader}
 
 
 object SbtJasminePlugin extends Plugin {
@@ -26,9 +25,10 @@ object SbtJasminePlugin extends Plugin {
 
   private val VersionRegex = """^\Qversion=\E(.*)$""".r
   lazy val cl = this.getClass.getClassLoader
+  type WebJarInfo = Option[(String, String)] // (Version, Root)
 
-  lazy val webjarJasmineVersion:Option[String] = for {
-    pomProps <- Option(cl.getResourceAsStream("META-INF/maven/org.webjars.bower/jasmine/pom.properties"))
+  def webJarVersion(pkg:String):Option[String] = for {
+    pomProps <- Option(cl.getResourceAsStream("META-INF/maven/"+pkg+"/jasmine/pom.properties"))
     propReader = new BufferedReader(new InputStreamReader(pomProps))
     version <- Stream.continually(propReader.readLine()).takeWhile(_ != null).collectFirst { case VersionRegex(v) => v }
   } yield {
@@ -36,20 +36,26 @@ object SbtJasminePlugin extends Plugin {
     version
   }
 
+  lazy val classicWebJar:WebJarInfo = for {
+    version <- webJarVersion("org.webjars")
+    jasmine <- Option(cl.getResource("META-INF/resources/webjars/jasmine/"+version+"/jasmine.js"))
+  } yield { (version, "META-INF/resources/webjars/jasmine/"+version) }
+
+  lazy val bowerWebJar:WebJarInfo = for {
+    version <- webJarVersion("org.webjars.bower")
+    jasmine <- Option(cl.getResource("META-INF/resources/webjars/jasmine/"+version+"/lib/jasmine-core/jasmine.js"))
+  } yield { (version, "META-INF/resources/webjars/jasmine/"+version+"/lib/jasmine-core") }
+
+  lazy val webJar:WebJarInfo = Stream(classicWebJar, bowerWebJar).collectFirst { case Some(pair) => pair }
+
+  lazy val webjarJasmineVersion:Option[String] = webJar.map(_._1)
+
   lazy val webjarJasmineEdition:Option[Int] = webjarJasmineVersion flatMap { v =>
     try { Some(v.take(1).toInt) } catch { case _:Exception => None }
   }
 
   /** First looks to see if there is a jasmine webjar on the path. If not found, then use what we deliver */
-  def jasmineResourceRoot(edition:Int):String = {
-    val maybeWebjar = for {
-      version <- webjarJasmineVersion
-      jasmine <- Option(cl.getResource("META-INF/resources/webjars/jasmine/" + version + "/lib/jasmine-core/jasmine.js"))
-    } yield {
-        "META-INF/resources/webjars/jasmine/" + version + "/lib/jasmine-core"
-      }
-    maybeWebjar getOrElse ("jasmine"+edition)
-  }
+  def jasmineResourceRoot(edition:Int):String = webJar.map(_._2).getOrElse("jasmine"+edition)
 
   def jasmineTask = (jasmineTestDir, appJsDir, appJsLibDir, jasmineConfFile, jasmineOutputDir, jasmineEdition, streams) map { 
     (testJsRoots, appJsRoots, appJsLibRoots, confs, outDir, edition, s) =>
@@ -60,6 +66,7 @@ object SbtJasminePlugin extends Plugin {
       if(edition == 1) "1.3.1"
       else "2.0.3"
     )
+    val resourceRoot = jasmineResourceRoot(edition)
 
     s.log.info("running jasmine "+version+"...")
 
@@ -75,7 +82,7 @@ object SbtJasminePlugin extends Plugin {
 
       jscontext.evaluateString(scope, "var arguments = [];", "Evil Hack to simulate command-line args to help r.js", 0, null)
       jscontext.evaluateString(scope, "var jasmineEdition = "+edition+";", "jasmineEdition.js", 0, null)
-      jscontext.evaluateString(scope, "var jasmineResourceRoot = \""+jasmineResourceRoot(edition)+"\";", "Pointing to the root of jasmine resources", 0, null)
+      jscontext.evaluateString(scope, "var jasmineResourceRoot = \""+resourceRoot+"\";", "Pointing to the root of jasmine resources", 0, null)
       jscontext.evaluateReader(scope, bundledScript("sbtjasmine.js"), "sbtjasmine.js", 1, null)
 
       val jasmineEnvHtml = outDir / "jasmineEnv.html"
