@@ -56,7 +56,12 @@ object SbtJasminePlugin extends Plugin {
 
     validateEdition(edition)
 
-    s.log.info("running jasmine"+edition+"...")
+    val version = webjarJasmineVersion.getOrElse(
+      if(edition == 1) "1.3.1"
+      else "2.0.3"
+    )
+
+    s.log.info("running jasmine "+version+"...")
 
     val errorCounts = for {
         testRoot <- testJsRoots
