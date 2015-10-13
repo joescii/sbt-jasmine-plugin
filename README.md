@@ -4,12 +4,9 @@ An SBT plugin for running jasmine tests in your build.
 
 ## Installation
 
-Add this plugin like any other to your `project/plugin.sbt` file, optionally providing a [webjar](http://www.webjars.org/) dependency to select your preferred jasmine version:
+Add this plugin like any other to your `project/plugin.sbt` file:
 
 ```scala
-// Optionally provide your preferred jasmine version via webjars
-libraryDependencies += "org.webjars.bower" % "jasmine" % "2.3.4"
-
 addSbtPlugin("com.joescii" % "sbt-jasmine-plugin" % "1.4.1")
 ```
 
@@ -26,6 +23,18 @@ lazy val main = Project(appName, appVersion, appDependencies)
   .settings(seq(jasmineSettings : _*))
 ```
 
+## Override jasmine version
+
+You can optionally provide a [webjar](http://www.webjars.org/) dependency to select your preferred jasmine version. In your `build.sbt` file:
+
+```scala
+// you can either use bower webjar...
+libraryDependencies += "org.webjars.bower" % "jasmine" % "2.3.4"
+// or classic webjar
+libraryDependencies += "org.webjars" % "jasmine" % "2.2.0"
+```
+
+If both bower and classic webjars dependencies are in the classpath, the classic webjar will be used instead of bower webjar.
 
 ## Configuration
 

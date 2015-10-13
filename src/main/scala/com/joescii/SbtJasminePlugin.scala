@@ -56,6 +56,11 @@ object SbtJasminePlugin extends Plugin {
     try { Some(v.take(1).toInt) } catch { case _:Exception => None }
   }
 
+  def jasmineVersion(edition:Int):String = webjarJasmineVersion.getOrElse(
+    if(edition == 1) "1.3.1"
+    else "2.0.3"
+  )
+
   /** First looks to see if there is a jasmine webjar on the path. If not found, then use what we deliver */
   def jasmineResourceRoot(edition:Int):String = webjar.map(_._2).getOrElse("jasmine"+edition)
 
@@ -64,10 +69,7 @@ object SbtJasminePlugin extends Plugin {
 
     validateEdition(edition)
 
-    val version = webjarJasmineVersion.getOrElse(
-      if(edition == 1) "1.3.1"
-      else "2.0.3"
-    )
+    val version = jasmineVersion(edition)
     val resourceRoot = jasmineResourceRoot(edition)
 
     s.log.info("running jasmine "+version+"...")
@@ -111,17 +113,18 @@ object SbtJasminePlugin extends Plugin {
 
     validateEdition(edition)
 
-    s.log.info("generating runner...")
+    val version = jasmineVersion(edition)
+    val resourceRoot = jasmineResourceRoot(edition)
 
-    val dir = "jasmine"+edition
+    s.log.info("generating jasmine runner "+version+"...")
 
-    outputBundledResource(dir+"/jasmine.js", outDir / "jasmine.js")
+    outputBundledResource(resourceRoot+"/jasmine.js", outDir / "jasmine.js")
     if(edition == 2) {
-      outputBundledResource(dir+"/boot.js", outDir / "boot.js")
-      outputBundledResource(dir+"/boot-rhino.js", outDir / "boot-rhino.js")
+      outputBundledResource(resourceRoot+"/boot.js", outDir / "boot.js")
+      outputBundledResource("jasmine2/boot-rhino.js", outDir / "boot-rhino.js")
     }
-    outputBundledResource(dir+"/jasmine-html.js", outDir / "jasmine-html.js")
-    outputBundledResource(dir+"/jasmine.css", outDir / "jasmine.css")
+    outputBundledResource(resourceRoot+"/jasmine-html.js", outDir / "jasmine-html.js")
+    outputBundledResource(resourceRoot+"/jasmine.css", outDir / "jasmine.css")
 
     val isWin = java.lang.System.getProperty("os.name").indexOf("Windows") > -1
 
