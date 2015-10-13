@@ -23,39 +23,41 @@ object SbtJasminePlugin extends Plugin {
 
   def validateEdition(edition:Int) = if(edition != 1 && edition != 2) throw new RuntimeException("jasmineEdition must be 1 or 2")
 
-  private val VersionRegex = """^\Qversion=\E(.*)$""".r
-  lazy val cl = this.getClass.getClassLoader
   type WebJarInfo = Option[(String, String)] // (Version, Root)
+  lazy val webjar:WebJarInfo = {
+    val VersionRegex = """^\Qversion=\E(.*)$""".r
+    val cl = this.getClass.getClassLoader
 
-  def webJarVersion(pkg:String):Option[String] = for {
-    pomProps <- Option(cl.getResourceAsStream("META-INF/maven/"+pkg+"/jasmine/pom.properties"))
-    propReader = new BufferedReader(new InputStreamReader(pomProps))
-    version <- Stream.continually(propReader.readLine()).takeWhile(_ != null).collectFirst { case VersionRegex(v) => v }
-  } yield {
-    pomProps.close()
-    version
+    def webjarVersion(pkg:String):Option[String] = for {
+      pomProps <- Option(cl.getResourceAsStream("META-INF/maven/"+pkg+"/jasmine/pom.properties"))
+      propReader = new BufferedReader(new InputStreamReader(pomProps))
+      version <- Stream.continually(propReader.readLine()).takeWhile(_ != null).collectFirst { case VersionRegex(v) => v }
+    } yield {
+      pomProps.close()
+      version
+    }
+
+    lazy val classicWebJar:WebJarInfo = for {
+      version <- webjarVersion("org.webjars")
+      jasmine <- Option(cl.getResource("META-INF/resources/webjars/jasmine/"+version+"/jasmine.js"))
+    } yield { (version, "META-INF/resources/webjars/jasmine/"+version) }
+
+    lazy val bowerWebJar:WebJarInfo = for {
+      version <- webjarVersion("org.webjars.bower")
+      jasmine <- Option(cl.getResource("META-INF/resources/webjars/jasmine/"+version+"/lib/jasmine-core/jasmine.js"))
+    } yield { (version, "META-INF/resources/webjars/jasmine/"+version+"/lib/jasmine-core") }
+
+    Stream(classicWebJar, bowerWebJar).collectFirst { case Some(pair) => pair }
   }
 
-  lazy val classicWebJar:WebJarInfo = for {
-    version <- webJarVersion("org.webjars")
-    jasmine <- Option(cl.getResource("META-INF/resources/webjars/jasmine/"+version+"/jasmine.js"))
-  } yield { (version, "META-INF/resources/webjars/jasmine/"+version) }
-
-  lazy val bowerWebJar:WebJarInfo = for {
-    version <- webJarVersion("org.webjars.bower")
-    jasmine <- Option(cl.getResource("META-INF/resources/webjars/jasmine/"+version+"/lib/jasmine-core/jasmine.js"))
-  } yield { (version, "META-INF/resources/webjars/jasmine/"+version+"/lib/jasmine-core") }
-
-  lazy val webJar:WebJarInfo = Stream(classicWebJar, bowerWebJar).collectFirst { case Some(pair) => pair }
-
-  lazy val webjarJasmineVersion:Option[String] = webJar.map(_._1)
+  lazy val webjarJasmineVersion:Option[String] = webjar.map(_._1)
 
   lazy val webjarJasmineEdition:Option[Int] = webjarJasmineVersion flatMap { v =>
     try { Some(v.take(1).toInt) } catch { case _:Exception => None }
   }
 
   /** First looks to see if there is a jasmine webjar on the path. If not found, then use what we deliver */
-  def jasmineResourceRoot(edition:Int):String = webJar.map(_._2).getOrElse("jasmine"+edition)
+  def jasmineResourceRoot(edition:Int):String = webjar.map(_._2).getOrElse("jasmine"+edition)
 
   def jasmineTask = (jasmineTestDir, appJsDir, appJsLibDir, jasmineConfFile, jasmineOutputDir, jasmineEdition, streams) map { 
     (testJsRoots, appJsRoots, appJsLibRoots, confs, outDir, edition, s) =>
