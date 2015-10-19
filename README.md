@@ -139,6 +139,10 @@ The following will be greatly appreciated as part of your Pull Request:
 ## Change log
 
 
+### 1.4.1
+* Update to support either classic webjars or bower webjars.
+* Fixed the html runner to also use the webjars.
+
 ### 1.4.0
 * Update Rhino to 1.7.7
 * Can optionally provide jasmine via webjars for fine-grained control over jasmine version.

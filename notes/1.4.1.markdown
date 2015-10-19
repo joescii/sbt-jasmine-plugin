@@ -1,0 +1,6 @@
+#scala #javascript @jasminebdd @scala_sbt
+
+* Update to support either classic webjars or bower webjars.
+* Fixed the html runner to also use the webjars.
+
+Thanks to [Damien Beaufils](https://github.com/damienbeaufils) for the ideas and contributions!
