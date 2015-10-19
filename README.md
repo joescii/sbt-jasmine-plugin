@@ -25,7 +25,8 @@ lazy val main = Project(appName, appVersion, appDependencies)
 
 ## Override jasmine version
 
-You can optionally provide a [webjar](http://www.webjars.org/) dependency to select your preferred jasmine version. In your `build.sbt` file:
+You can optionally provide a [webjar](http://www.webjars.org/) dependency to select your preferred jasmine version.
+In your `project/plugin.sbt` file:
 
 ```scala
 // you can either use bower webjar...
