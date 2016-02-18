@@ -8,7 +8,7 @@ homepage := Some(url("https://github.com/joescii/sbt-jasmine-plugin"))
 
 version := "1.4.2-SNAPSHOT"
 
-libraryDependencies += "org.mozilla" % "rhino" % "1.7.7"
+libraryDependencies += "org.mozilla" % "rhino" % "1.7.7.1"
 
 // don't bother publishing javadoc
 publishArtifact in (Compile, packageDoc) := false
