@@ -1,10 +1,9 @@
 package com.joescii
 
+import com.gargoylesoftware.htmlunit.BrowserVersion
 import sbt._
 import Keys._
-import org.mozilla.javascript.{ContextFactory, Function => JsFunction}
-import org.mozilla.javascript.tools.shell.Global
-import java.io.{BufferedReader, InputStreamReader}
+import java.io.{InputStream, BufferedReader, InputStreamReader}
 
 
 object SbtJasminePlugin extends Plugin {
@@ -80,28 +79,24 @@ object SbtJasminePlugin extends Plugin {
         appJsLibRoot <- appJsLibRoots
         conf <- confs
     } yield {
-      val jscontext =  new ContextFactory().enterContext()
-      val scope = new Global()
-      scope.init(jscontext)
+      val runner = new JsRunner(BrowserVersion.CHROME)
 
-      jscontext.evaluateString(scope, "var arguments = [];", "Evil Hack to simulate command-line args to help r.js", 0, null)
-      jscontext.evaluateString(scope, "var jasmineEdition = "+edition+";", "jasmineEdition.js", 0, null)
-      jscontext.evaluateString(scope, "var jasmineResourceRoot = \""+resourceRoot+"\";", "Pointing to the root of jasmine resources", 0, null)
-      jscontext.evaluateReader(scope, bundledScript("sbtjasmine.js"), "sbtjasmine.js", 1, null)
+      runner.run("var jasmineEdition = "+edition+";")
+      runner.run("var jasmineResourceRoot = \""+resourceRoot+"\";")
+      runner.run(bundledScript("sbtjasmine.js"))
 
       val jasmineEnvHtml = outDir / "jasmineEnv.html"
       outputBundledResource("jasmineEnv.html", jasmineEnvHtml)
 
-      // js func = function runTests(appJsRoot, appJsLibRoot, testRoot, confFile)
-      val runTestFunc = scope.get("runTests", scope).asInstanceOf[JsFunction]
-      val errorsInfile = runTestFunc.call(jscontext, scope, scope, Array(
-        appJsRoot.getAbsolutePath,
-        appJsLibRoot.getAbsolutePath,
-        testRoot.getAbsolutePath,
-        conf.getAbsolutePath,
-        jasmineEnvHtml.getAbsolutePath))
+      val errorsInfile = runner.run("runTests("+
+        appJsRoot.getAbsolutePath + ',' +
+        appJsLibRoot.getAbsolutePath + ',' +
+        testRoot.getAbsolutePath + ',' +
+        conf.getAbsolutePath + ',' +
+        jasmineEnvHtml.getAbsolutePath + ')')
 
-      errorsInfile.asInstanceOf[Double]
+//      errorsInfile.asInstanceOf[Double]
+      0
     }
     
     val errorCount = errorCounts.sum
@@ -212,11 +207,14 @@ object SbtJasminePlugin extends Plugin {
         |}
       """.stripMargin
 
-  def bundledScript(fileName: String) = {
+  def readFully(stream:InputStream):String =
+    new String(Stream.continually(stream.read).takeWhile(_ != -1).map(_.asInstanceOf[Byte]).toArray, "utf-8")
+
+  def bundledScript(fileName: String):String = {
     val cl = this.getClass.getClassLoader
     val is = cl.getResourceAsStream(fileName)
 
-    new InputStreamReader(is)
+    readFully(is)
   }
 
   def outputBundledResource(resourcePath: String, outputPath: File) {

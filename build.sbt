@@ -6,9 +6,9 @@ organization := "com.joescii"
 
 homepage := Some(url("https://github.com/joescii/sbt-jasmine-plugin"))
 
-version := "1.4.1"
+version := "1.5.0-SNAPSHOT"
 
-libraryDependencies += "org.mozilla" % "rhino" % "1.7.7"
+libraryDependencies += "net.sourceforge.htmlunit" % "htmlunit" % "2.19"
 
 // don't bother publishing javadoc
 publishArtifact in (Compile, packageDoc) := false
