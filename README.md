@@ -7,7 +7,7 @@ An SBT plugin for running jasmine tests in your build.
 Add this plugin like any other to your `project/plugin.sbt` file:
 
 ```scala
-addSbtPlugin("com.joescii" % "sbt-jasmine-plugin" % "1.4.1")
+addSbtPlugin("com.joescii" % "sbt-jasmine-plugin" % "1.4.2")
 ```
 
 You will also need to import the plugin's settings in the usual way in your `build.sbt` file:
@@ -139,6 +139,10 @@ The following will be greatly appreciated as part of your Pull Request:
 
 ## Change log
 
+
+### 1.4.2
+* Updated Rhino to 1.7.7.1
+* Updated the console log to print current Rhino version rather than an incorrect hard coded value 
 
 ### 1.4.1
 * Update to support either classic webjars or bower webjars.

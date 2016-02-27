@@ -1,0 +1,4 @@
+#scala #javascript @jasminebdd @scala_sbt
+
+* Updated Rhino to 1.7.7.1
+* Updated the console log to print current Rhino version rather than an incorrect hard coded value 
