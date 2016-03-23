@@ -3,7 +3,7 @@
 **THIS PLUGIN IS NOW DEPRECATED**
 
 Due to the discontinuation of maintenance on [env.js](https://github.com/thatcher/env-js), this project is no longer a viable solution to running your javascript tests on the JVM in sbt.
-In it's place, [sbt-js-test](https://github.com/joescii/sbt-js-test) has been created.
+In its place, [sbt-js-test](https://github.com/joescii/sbt-js-test) has been created.
 It leverages [HtmlUnit](http://htmlunit.sourceforge.net/) in order to support an up-to-date browser API on the JVM.
 
 ## Migration Guide
