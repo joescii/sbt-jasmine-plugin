@@ -1,5 +1,21 @@
 # sbt-jasmine-plugin
 
+**THIS PLUGIN IS NOW DEPRECATED**
+
+Due to the discontinuation of maintenance on [env.js](https://github.com/thatcher/env-js), this project is no longer a viable solution to running your javascript tests on the JVM in sbt.
+In it's place, [sbt-js-test](https://github.com/joescii/sbt-js-test) has been created.
+It leverages [HtmlUnit](http://htmlunit.sourceforge.net/) in order to support an up-to-date browser API on the JVM.
+
+## Migration Guide
+
+Configuration of _sbt-js-test_ is much simpler.
+Just include all javascript resources in `jsResources` except for the `jasmineTestDir`.
+Use your existing entry for `jasmineConfFile` to help you correctly order your javascript assets in `jsResources`.
+Put `jasmineTestDir` in `jsTestResources` and you will be able to utilized `jsTestOnly` to cherry pick test files.
+
+
+
+
 An SBT plugin for running jasmine tests in your build.
 
 ## Installation
